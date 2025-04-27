@@ -1,3 +1,0 @@
-langchain-text-splitters
-langchain-google-vertexai
-langchain-openai
