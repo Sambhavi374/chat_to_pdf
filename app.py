@@ -19,11 +19,88 @@ load_dotenv()
 groq_api_key = os.getenv("GROQ_API_KEY")
 os.environ["GOOGLE_API_KEY"] = os.getenv("GOOGLE_API_KEY")
 
-st.title("Document QnA")
-
 LLM = ChatGroq(groq_api_key=groq_api_key, 
             model="llama3-8b-8192", 
             temperature=0.0)
+
+# App title and description
+st.set_page_config(page_title="Document QnA", layout="wide")
+
+# Custom CSS for styling
+st.markdown(
+    """
+    <style>
+    /* Set the entire background color */
+    body {
+        background-color: #121212; /* Dark grey background */
+        color: #000000; /* Black text for all elements */
+    }
+    /* Main title styling */
+    .main-title {
+        font-size: 36px;
+        color: #000000; /* Black text */
+        text-align: center;
+        font-weight: bold;
+    }
+    /* Sub-title styling */
+    .sub-title {
+        font-size: 20px;
+        color: #000000; /* Black text */
+        margin-top: 20px;
+    }
+    /* Success message styling */
+    .success-message {
+        color: #000000; /* Black text */
+        font-weight: bold;
+    }
+    /* Warning message styling */
+    .warning-message {
+        color: #000000; /* Black text */
+        font-weight: bold;
+    }
+    /* Response box styling */
+    .response-box {
+        background-color: #1E1E1E; /* Slightly lighter dark grey */
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #333333; /* Dark grey border */
+        color: #000000; /* Black text */
+    }
+    /* Expander title styling */
+    .expander-title {
+        color: #000000; /* Black text */
+        font-weight: bold;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True,
+)
+
+# Main title
+st.markdown('<div class="main-title">📄 Document QnA</div>', unsafe_allow_html=True)
+
+# Sub-title
+st.markdown(
+    """
+    <div class="sub-title">
+    Welcome to <b>Document QnA</b>! This app allows you to upload PDF files, create embeddings, and ask questions based on the document's content.
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+# Main content
+st.markdown('<div class="sub-title">🔧 Create Embeddings</div>', unsafe_allow_html=True)
+st.markdown(
+    """
+    <div class="warning-message">
+    Before asking a question, please create the embeddings by clicking the button below.<br>
+    <b>Note:</b> For questions from the same document, embeddings need to be created only once.
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 prompt = ChatPromptTemplate.from_template(
@@ -65,8 +142,9 @@ def vec_embedding():
             st.session_state.embedding
         )
 
-# File uploader for user to upload PDF
-uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+# Sidebar for file upload
+st.sidebar.header("📂 Upload PDF")
+uploaded_file = st.sidebar.file_uploader("Upload a PDF file", type=["pdf"])
 if uploaded_file:
     # Save the uploaded file to the 'data' folder
     data_folder = "./data"
@@ -74,16 +152,17 @@ if uploaded_file:
     file_path = os.path.join(data_folder, uploaded_file.name)
     with open(file_path, "wb") as f:
         f.write(uploaded_file.getbuffer())
-    st.success(f"File '{uploaded_file.name}' uploaded successfully!")        
+    st.sidebar.success(f"File '{uploaded_file.name}' uploaded successfully!")
 
-prompt1=st.text_input("Ask your Question here")
 
-st.markdown("_Before asking a question, please create the embeddings by clicking the button below._")
-st.markdown("*Note:*_For the question from same document, embeddings need to to created once only._")
 
-if st.button("Create Embeddings"):
+if st.button("🚀 Create Embeddings"):
     vec_embedding()
-    st.write("Vector store created successfully!")
+    st.markdown('<div class="success-message">Vector store created successfully!</div>', unsafe_allow_html=True)
+
+# Question input
+st.markdown('<div class="sub-title">❓ Ask a Question</div>', unsafe_allow_html=True)
+prompt1 = st.text_input("Type your question here:")
 
 
 if prompt1:
@@ -100,10 +179,13 @@ if prompt1:
         "context": retrieved_docs,
         "question": prompt1
     })
+    
+    st.markdown('<div class="sub-title">📝 Response</div>', unsafe_allow_html=True)
+    st.markdown(f'<div class="response-box">{response}</div>', unsafe_allow_html=True)
 
-    st.write(response)
-
-    with st.expander("Document Similarity Search"):
+    with st.expander("🔍 Document Similarity Search"):
+        st.markdown('<div class="expander-title">Similar Documents:</div>', unsafe_allow_html=True)
         for i, doc in enumerate(retrieved_docs):
+            st.markdown(f"**Document {i + 1}:**")
             st.write(doc.page_content)
             st.write("-------------------------------------------")
