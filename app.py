@@ -65,6 +65,17 @@ def vec_embedding():
             st.session_state.embedding
         )
 
+# File uploader for user to upload PDF
+uploaded_file = st.file_uploader("Upload a PDF file", type=["pdf"])
+if uploaded_file:
+    # Save the uploaded file to the 'data' folder
+    data_folder = "./data"
+    os.makedirs(data_folder, exist_ok=True)
+    file_path = os.path.join(data_folder, uploaded_file.name)
+    with open(file_path, "wb") as f:
+        f.write(uploaded_file.getbuffer())
+    st.success(f"File '{uploaded_file.name}' uploaded successfully!")        
+
 prompt1=st.text_input("Ask your Question here")
 
 st.markdown("_Before asking a question, please create the embeddings by clicking the button below._")
