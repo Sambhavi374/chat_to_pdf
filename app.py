@@ -32,8 +32,8 @@ st.markdown(
     <style>
     /* Set the entire background color */
     body {
-        background-color: #121212; /* Dark grey background */
-        color: #000000; /* Black text for all elements */
+        background-color: 	#e0bbf7;
+         color: #000000; /* Black text for all elements */
     }
     /* Main title styling */
     .main-title {
@@ -50,21 +50,21 @@ st.markdown(
     }
     /* Success message styling */
     .success-message {
-        color: #000000; /* Black text */
+        color: #2c3e50; 
         font-weight: bold;
     }
     /* Warning message styling */
     .warning-message {
-        color: #000000; /* Black text */
+        color: #2c3e50;
         font-weight: bold;
     }
     /* Response box styling */
     .response-box {
-        background-color: #1E1E1E; /* Slightly lighter dark grey */
+        background-color: rgba(173, 216, 230, 0.3); /* Light blue with 0.3 opacity */
         padding: 10px;
         border-radius: 5px;
-        border: 1px solid #333333; /* Dark grey border */
-        color: #000000; /* Black text */
+        border: 1px solid ##dbb2ff; 
+        color: #000000;
     }
     /* Expander title styling */
     .expander-title {
